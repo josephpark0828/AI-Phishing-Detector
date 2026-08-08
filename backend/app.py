@@ -1,10 +1,66 @@
-from flask import Flask
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+
+from aimodel import predict_phishing
+
 
 app = Flask(__name__)
 
+CORS(
+    app,
+    resources={
+        r"/analyze": {
+            "origins": [
+                "http://localhost:5173",
+                "http://127.0.0.1:5173",
+            ]
+        }
+    },
+)
+
+
 @app.route("/")
-def home():
-    return "Hello from Flask!"
+def status():
+    return "Phishing detector backend is running."
+
+
+@app.route("/analyze", methods=["POST"])
+def analyze():
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({
+            "error": "The request must contain JSON data."
+        }), 400
+
+    message = data.get("message")
+
+    if not isinstance(message, str) or not message.strip():
+        return jsonify({
+            "error": "Please enter a message."
+        }), 400
+
+    try:
+        prediction = predict_phishing(message)
+        return jsonify(prediction), 200
+
+    except FileNotFoundError as error:
+        return jsonify({
+            "error": str(error)
+        }), 503
+
+    except (TypeError, ValueError) as error:
+        return jsonify({
+            "error": str(error)
+        }), 400
+
+    except Exception:
+        app.logger.exception("Prediction failed.")
+
+        return jsonify({
+            "error": "The message could not be analyzed."
+        }), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)
