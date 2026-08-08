@@ -54,5 +54,12 @@ def analyze():
         }), 500
 
 
+# Support requests routed to /api/* by the Vercel rewrite. The frontend posts to /api/analyze
+# so provide an alias endpoint that calls the same handler.
+@app.route('/api/analyze', methods=['POST'])
+def analyze_api():
+    return analyze()
+
+
 if __name__ == "__main__":
     app.run(debug=True)
