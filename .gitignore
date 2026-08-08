@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 backend/data/
 backend/.venv/
+
+.vercel

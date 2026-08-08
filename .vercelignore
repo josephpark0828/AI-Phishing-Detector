@@ -1,0 +1,24 @@
+# Exclude common large and local-only files from Vercel upload
+node_modules/
+.git/
+.vscode/
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+dist/
+build/
+out/
+.cache/
+data/
+datasets/
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.mp4
+*.mov
+*.psd
+*.sqlite
+*.db
