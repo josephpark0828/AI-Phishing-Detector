@@ -6,17 +6,9 @@ from aimodel import predict_phishing
 
 app = Flask(__name__)
 
-CORS(
-    app,
-    resources={
-        r"/analyze": {
-            "origins": [
-                "http://localhost:5173",
-                "http://127.0.0.1:5173",
-            ]
-        }
-    },
-)
+# Allow cross-origin requests from the same origin (deployed frontend uses the same domain via the /api rewrite)
+# Using default CORS settings to accept requests from the frontend served by Vercel.
+CORS(app)
 
 
 @app.route("/")
